@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#14061f">
+<meta name="description" content="تجربة ثلاثية الأبعاد تجريبية في الغابة الليلية مع ثلاث موجات من النمور.">
+<title>GTA 6 — الغابة السوداء</title>
+<style>
+:root{--ink:#14061f;--pink:#ff3d9a;--amber:#ffa62b;--teal:#19d3c5;--paper:#fff4e0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:none}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:system-ui,"Segoe UI",Roboto,"Noto Sans Arabic",sans-serif;color:var(--paper)}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+.scr{position:fixed;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;z-index:5;text-align:center;padding:12px 16px}
+.scr.on{display:flex}
+#splash{background:radial-gradient(ellipse at 50% 35%,#321052 0%,#14061f 58%,#05030a 100%);gap:20px}
+.logo-mark{position:relative;width:min(74vw,390px);aspect-ratio:1.15;display:grid;place-items:center;filter:drop-shadow(0 12px 0 #08020d)}
+.logo-gta{z-index:1;color:#fff;font-family:Impact,"Arial Black",system-ui,sans-serif;font-weight:1000;font-stretch:condensed;font-size:clamp(44px,12vw,88px);line-height:.76;letter-spacing:-5px;text-align:center;-webkit-text-stroke:2px #170b22;text-shadow:4px 5px 0 #170b22,7px 8px 0 #ff3d9a}
+.logo-gta span{letter-spacing:-3px}
+.logo-vi{position:absolute;right:3%;bottom:0;color:#ffcf55;font:1000 clamp(86px,22vw,160px)/.8 Impact,"Arial Black",sans-serif;transform:skew(-9deg);-webkit-text-stroke:3px #170b22;text-shadow:5px 6px 0 #170b22}
+.splash-caption{font-size:11px;letter-spacing:3px;color:#e9c7ff;opacity:.8}
+#intro{background:radial-gradient(circle at 30% 20%,#3a0d4d,var(--ink) 70%)}
+#intro img{max-height:52vh;max-width:86vw;aspect-ratio:1;object-fit:cover;border:3px solid var(--paper);box-shadow:8px 8px 0 var(--pink)}
+.side{display:flex;flex-direction:column;gap:12px;align-items:center}
+h1{margin:0;font-size:clamp(26px,6vw,46px);font-weight:900;font-style:italic;letter-spacing:-.5px;color:var(--paper);text-shadow:3px 3px 0 var(--pink)}
+p{margin:0;opacity:.85;font-size:15px}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{font:800 17px/1 inherit;padding:14px 24px;border:0;border-radius:10px;background:var(--pink);color:#fff;touch-action:manipulation}
+.btn.alt{background:transparent;border:2px solid var(--teal);color:var(--teal)}
+.btn:active{transform:translateY(2px)}
+@media(orientation:landscape){#intro{flex-direction:row;gap:28px}#intro img{max-height:86vh;max-width:44vw}}
+#promo{background:#000;padding:0}
+#promo video{width:100%;height:100%;object-fit:contain}
+#skip{position:absolute;top:calc(10px + env(safe-area-inset-top));inset-inline-start:12px;background:rgba(0,0,0,.55)}
+#end{background:rgba(20,6,31,.8)}
+#hud{position:fixed;inset:0;z-index:3;display:none;pointer-events:none}
+#hud.on{display:block}
+#zl,#zr{position:absolute;top:0;bottom:0;pointer-events:auto}
+#zl{left:0;width:45%}#zr{right:0;width:55%}
+#joy{position:absolute;left:calc(28px + env(safe-area-inset-left));bottom:28px;width:110px;height:110px;border-radius:50%;border:2px solid rgba(255,244,224,.35);background:rgba(20,6,31,.35);pointer-events:none}
+#knob{position:absolute;left:30px;top:30px;width:50px;height:50px;border-radius:50%;background:rgba(255,61,154,.8)}
+#fire{position:absolute;right:calc(30px + env(safe-area-inset-right));bottom:34px;width:92px;height:92px;border-radius:50%;border:3px solid var(--paper);background:rgba(255,61,154,.75);color:#fff;font:900 16px inherit;pointer-events:auto}
+#fire:active{background:var(--amber)}
+#top{position:absolute;top:calc(8px + env(safe-area-inset-top));left:12px;right:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-weight:800;font-size:14px;text-shadow:0 1px 3px #000}
+#hpw{width:min(220px,38vw);height:14px;border:2px solid var(--paper);border-radius:8px;overflow:hidden;background:rgba(0,0,0,.5)}
+#hp{height:100%;width:100%;background:linear-gradient(90deg,var(--pink),var(--amber));transition:width .15s}
+#xh{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px;border:2px solid var(--teal);border-radius:50%;opacity:.8}
+#banner{position:absolute;top:30%;left:0;right:0;text-align:center;font-size:clamp(28px,7vw,54px);font-weight:900;font-style:italic;text-shadow:3px 3px 0 var(--pink);opacity:0;transition:opacity .4s}
+#hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;opacity:.6}
+#hurt{position:absolute;inset:0;background:radial-gradient(circle,transparent 40%,rgba(255,20,60,.75));opacity:0}
+#rotate{display:none;position:fixed;inset:0;z-index:20;background:#09040f;color:#fff;align-items:center;justify-content:center;text-align:center;padding:28px;font-weight:800;font-size:22px}
+@media(orientation:portrait){#rotate{display:flex}}
+</style>
+</head>
+<body>
+<div id="splash" class="scr on">
+  <div class="logo-mark" aria-label="Grand Theft Auto VI">
+    <div class="logo-gta">GRAND<br>THEFT<br><span>AUTO</span></div>
+    <div class="logo-vi">VI</div>
+  </div>
+  <p class="splash-caption">BLACK FOREST · 3D EXPERIENCE</p>
+  <button class="btn alt" id="continue">متابعة</button>
+</div>
+<div id="intro" class="scr">
+  <img src="assets/cover.jpg" alt="GTA 6">
+  <div class="side">
+    <h1>الغابة السوداء</h1>
+    <p>اصطد النمور قبل أن تصطادك. ثلاث موجات، ليل دامس، ومصباح واحد.</p>
+    <div class="row">
+      <button class="btn" id="play">شاهد الإعلان ثم العب</button>
+      <button class="btn alt" id="direct">ابدأ مباشرة</button>
+    </div>
+  </div>
+</div>
+<div id="promo" class="scr">
+  <video id="vid" src="assets/video_1.mp4" playsinline preload="auto"></video>
+  <button class="btn alt" id="skip">تخطّي الإعلان</button>
+</div>
+<div id="end" class="scr">
+  <h1 id="et"></h1><p id="es"></p>
+  <div class="row"><button class="btn" id="again">العب مجددًا</button><button class="btn alt" id="menu">القائمة</button></div>
+</div>
+<div id="hud">
+  <div id="hurt"></div>
+  <div id="zl"></div><div id="zr"></div>
+  <div id="xh"></div>
+  <div id="top"><div><div id="hpw"><div id="hp"></div></div><div id="wv"></div></div><div id="st"></div></div>
+  <div id="banner"></div>
+  <div id="joy"><div id="knob"></div></div>
+  <button id="fire">نار</button>
+  <div id="hint">العصا اليسرى للحركة · اسحب يمينًا للتصويب · على الحاسوب: WASD + الماوس</div>
+</div>
+<div id="rotate">يرجى تدوير الهاتف إلى الوضع الأفقي لتشغيل اللعبة</div>
+<script src="lib/three.min.js"></script>
+<script>
+(()=>{
+const T=THREE,$=i=>document.getElementById(i),cl=(v,a=-1,b=1)=>Math.max(a,Math.min(b,v));
+const show=id=>document.querySelectorAll('.scr').forEach(e=>e.classList.toggle('on',e.id===id));
+document.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---------- sound ---------- */
+let ac;
+const beep=(f,d,type,v,to)=>{try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),n=ac.currentTime;
+o.type=type;o.frequency.setValueAtTime(f,n);o.frequency.exponentialRampToValueAtTime(to,n+d);g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(n+d)}catch(e){}};
+
+/* ---------- scene ---------- */
+const R=new T.WebGLRenderer({antialias:false});
+R.setPixelRatio(Math.min(devicePixelRatio||1,1.5));R.setClearColor(0x06030c);document.body.prepend(R.domElement);
+const S=new T.Scene();S.fog=new T.FogExp2(0x06030c,.05);
+const C=new T.PerspectiveCamera(70,1,.1,220);C.rotation.order='YXZ';S.add(C);
+const resize=()=>{R.setSize(innerWidth,innerHeight);C.aspect=innerWidth/innerHeight;C.updateProjectionMatrix()};
+addEventListener('resize',resize);resize();
+S.add(new T.AmbientLight(0x4a3f7a,.75));
+const moonL=new T.DirectionalLight(0x8aa6ff,.55);moonL.position.set(-30,50,-20);S.add(moonL);
+const lamp=new T.SpotLight(0xfff0c8,2.4,48,.5,.5,1);C.add(lamp);lamp.target.position.set(0,0,-1);C.add(lamp.target);
+const muzzle=new T.PointLight(0xffaa33,0,8);muzzle.position.set(.3,-.2,-1);C.add(muzzle);
+const gun=new T.Mesh(new T.BoxGeometry(.1,.12,.7),new T.MeshLambertMaterial({color:0x222222}));gun.position.set(.28,-.26,-.6);C.add(gun);
+
+const ground=new T.Mesh(new T.PlaneGeometry(400,400),new T.MeshLambertMaterial({color:0x0d1a13}));ground.rotation.x=-Math.PI/2;S.add(ground);
+const moon=new T.Mesh(new T.SphereGeometry(6,16,16),new T.MeshBasicMaterial({color:0xe6ecff,fog:false}));moon.position.set(-70,80,-110);S.add(moon);
+const sp=[];for(let i=0;i<500;i++){const a=Math.random()*6.283,e=Math.random()*1.3+.1,r=170;sp.push(Math.cos(a)*Math.cos(e)*r,Math.sin(e)*r,Math.sin(a)*Math.cos(e)*r)}
+const sg=new T.BufferGeometry();sg.setAttribute('position',new T.Float32BufferAttribute(sp,3));
+S.add(new T.Points(sg,new T.PointsMaterial({size:1.4,color:0xffffff,fog:false})));
+
+const N=300,trees=[];
+const trunk=new T.InstancedMesh(new T.CylinderGeometry(.25,.4,6,6),new T.MeshLambertMaterial({color:0x1b1209}),N);
+const crown=new T.InstancedMesh(new T.ConeGeometry(2.2,8,7),new T.MeshLambertMaterial({color:0x08240f}),N);
+const mx=new T.Matrix4();
+for(let i=0;i<N;i++){let x,z;do{x=(Math.random()-.5)*136;z=(Math.random()-.5)*136}while(Math.hypot(x,z)<7);
+trees.push([x,z]);const s=.8+Math.random()*.8;
+mx.makeScale(s,s,s).setPosition(x,3*s,z);trunk.setMatrixAt(i,mx);
+mx.makeScale(s,s,s).setPosition(x,8*s,z);crown.setMatrixAt(i,mx)}
+S.add(trunk,crown);
+const blocked=(x,z)=>{for(const t of trees)if((t[0]-x)**2+(t[1]-z)**2<.85)return true;return false};
+
+/* ---------- tigers ---------- */
+const matO=new T.MeshLambertMaterial({color:0xe07a1a}),matB=new T.MeshLambertMaterial({color:0x120a05}),matE=new T.MeshBasicMaterial({color:0x7dff4a,fog:false});
+function mkTiger(){
+  const g=new T.Group(),bx=(w,h,d,x,y,z,m)=>{const q=new T.Mesh(new T.BoxGeometry(w,h,d),m);q.position.set(x,y,z);g.add(q);return q};
+  bx(.8,.8,1.8,0,1,0,matO);bx(.62,.6,.6,0,1.15,1.1,matO);
+  [-.65,-.2,.25,.7].forEach(z=>bx(.84,.82,.1,0,1.01,z,matB));
+  bx(.12,.12,1,0,1.1,-1.3,matB);bx(.1,.08,.06,-.16,1.25,1.42,matE);bx(.1,.08,.06,.16,1.25,1.42,matE);
+  const legs=[[-.28,.6],[.28,.6],[-.28,-.6],[.28,-.6]].map(p=>bx(.2,.7,.2,p[0],.35,p[1],matO));
+  g.userData={hp:3,legs,t:Math.random()*9,cd:.6};g.scale.setScalar(1.4);return g}
+
+/* ---------- state ---------- */
+const WAVES=[3,5,8],MAG=12;
+let run=false,alive=false,px=0,pz=0,yaw=0,pitch=0,kick=0,bob=0,hp=100,mag=MAG,reload=0,fireCd=0,hurt=0,wave=0,kills=0,pend=false,firing=false,jx=0,jy=0;
+const tigers=[],keys={},rc=new T.Raycaster();rc.far=60;
+
+function banner(t){const b=$('banner');b.textContent=t;b.style.opacity=1;setTimeout(()=>b.style.opacity=0,1800)}
+function startWave(){
+  pend=false;banner('الموجة '+(wave+1)+' من '+WAVES.length);
+  for(let i=0;i<WAVES[wave];i++){const a=Math.random()*6.283,r=26+Math.random()*10,g=mkTiger();
+    g.position.set(cl(px+Math.cos(a)*r,-62,62),0,cl(pz+Math.sin(a)*r,-62,62));S.add(g);tigers.push(g)}
+}
+function startGame(){
+  tigers.splice(0).forEach(g=>S.remove(g));
+  px=pz=0;yaw=pitch=kick=0;hp=100;mag=MAG;reload=0;wave=0;kills=0;hurt=0;alive=true;run=true;
+  show(null);$('hud').classList.add('on');startWave();
+  setTimeout(()=>$('hint').style.opacity=0,6000)
+}
+function finish(win){
+  alive=false;firing=false;if(document.exitPointerLock)document.exitPointerLock();
+  $('et').textContent=win?'انتصرت! الغابة آمنة':'سقطت في الغابة السوداء';
+  $('es').textContent='النمور المصطادة: '+kills;
+  $('hud').classList.remove('on');show('end');
+  beep(win?440:120,.6,'triangle',.3,win?880:40)
+}
+function fire(){
+  if(!alive||fireCd>0||reload>0)return;
+  mag--;fireCd=.2;muzzle.intensity=3;kick=.035;beep(240,.14,'sawtooth',.22,40);
+  rc.setFromCamera({x:0,y:0},C);
+  const h=rc.intersectObjects(tigers,true);
+  if(h.length){let o=h[0].object;while(o.parent!==S)o=o.parent;
+    o.userData.hp--;o.scale.setScalar(1.7);beep(160,.1,'square',.2,60);
+    if(o.userData.hp<=0){S.remove(o);tigers.splice(tigers.indexOf(o),1);kills++;beep(300,.35,'triangle',.25,70)}}
+  if(mag<=0)reload=1.4
+}
+
+function update(dt){
+  fireCd-=dt;muzzle.intensity=Math.max(0,muzzle.intensity-dt*25);kick*=.85;
+  if(reload>0){reload-=dt;if(reload<=0)mag=MAG}
+  hurt-=dt*1.6;$('hurt').style.opacity=Math.max(0,hurt);
+  if(firing)fire();
+  let ix=jx+(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0),iy=jy+(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0);
+  const l=Math.hypot(ix,iy);if(l>1){ix/=l;iy/=l}
+  const s=5.5*dt,fx=-Math.sin(yaw),fz=-Math.cos(yaw),rx=Math.cos(yaw),rz=-Math.sin(yaw);
+  const nx=cl(px+(fx*iy+rx*ix)*s,-62,62),nz=cl(pz+(fz*iy+rz*ix)*s,-62,62);
+  if(!blocked(nx,pz))px=nx;if(!blocked(px,nz))pz=nz;
+  bob+=Math.min(l,1)*dt*9;C.position.set(px,1.6+Math.sin(bob)*.05*Math.min(l,1),pz);C.rotation.set(pitch+kick,yaw,0);
+  for(const g of tigers){
+    const d=g.userData,dx=px-g.position.x,dz=pz-g.position.z,dist=Math.hypot(dx,dz);
+    g.rotation.y=Math.atan2(dx,dz);
+    if(dist>1.9){const v=(3.4+wave*.6)*dt;g.position.x+=dx/dist*v;g.position.z+=dz/dist*v;d.t+=dt*9}
+    d.legs.forEach((q,i)=>q.rotation.x=Math.sin(d.t+(i%2?Math.PI:0))*.6);
+    d.cd-=dt;if(dist<2.3&&d.cd<=0){d.cd=1;hp-=12;hurt=.9;beep(90,.25,'sawtooth',.3,40)}
+    const k=g.scale.x;if(k>1.4)g.scale.setScalar(Math.max(1.4,k-dt*2))
+  }
+  if(hp<=0){hp=0;finish(false)}
+  else if(!tigers.length&&!pend){wave++;
+    if(wave>=WAVES.length)finish(true);else{pend=true;hp=Math.min(100,hp+25);banner('نجحت! استعدّ للموجة التالية');setTimeout(()=>alive&&startWave(),2500)}}
+  $('hp').style.width=hp+'%';
+  $('wv').textContent='الموجة '+Math.min(wave+1,WAVES.length)+' · نمور متبقية: '+tigers.length;
+  $('st').textContent=(reload>0?'إعادة التعبئة...':'الذخيرة '+mag+'/'+MAG)+' · صيد '+kills
+}
+let last=0;
+(function loop(t){requestAnimationFrame(loop);const dt=Math.min((t-last)/1000,.05);last=t;if(!run)return;if(alive)update(dt);R.render(S,C)})(0);
+
+/* ---------- input ---------- */
+const zl=$('zl'),zr=$('zr'),knob=$('knob'),P={passive:false};
+let jid=null,ox=0,oy=0,lid=null,lx=0,ly=0;
+zl.addEventListener('touchstart',e=>{e.preventDefault();const t=e.changedTouches[0];jid=t.identifier;ox=t.clientX;oy=t.clientY},P);
+zl.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===jid){jx=cl((t.clientX-ox)/50);jy=cl(-(t.clientY-oy)/50);knob.style.transform=`translate(${jx*32}px,${-jy*32}px)`}},P);
+const jend=e=>{for(const t of e.changedTouches)if(t.identifier===jid){jid=null;jx=jy=0;knob.style.transform=''}};
+zl.addEventListener('touchend',jend);zl.addEventListener('touchcancel',jend);
+zr.addEventListener('touchstart',e=>{e.preventDefault();const t=e.changedTouches[0];lid=t.identifier;lx=t.clientX;ly=t.clientY},P);
+zr.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===lid){yaw-=(t.clientX-lx)*.006;pitch=cl(pitch-(t.clientY-ly)*.006,-1,1);lx=t.clientX;ly=t.clientY}},P);
+const lend=e=>{for(const t of e.changedTouches)if(t.identifier===lid)lid=null};
+zr.addEventListener('touchend',lend);zr.addEventListener('touchcancel',lend);
+const fb=$('fire');
+fb.addEventListener('touchstart',e=>{e.preventDefault();firing=true},P);
+['touchend','touchcancel'].forEach(n=>fb.addEventListener(n,()=>firing=false));
+/* desktop */
+zr.addEventListener('mousedown',()=>{if(zr.requestPointerLock&&document.pointerLockElement!==zr)zr.requestPointerLock();firing=true});
+addEventListener('mouseup',()=>firing=false);
+addEventListener('mousemove',e=>{if(document.pointerLockElement===zr){yaw-=e.movementX*.0025;pitch=cl(pitch-e.movementY*.0025,-1,1)}});
+addEventListener('keydown',e=>{keys[e.code]=1;if(e.code==='Space')firing=true});
+addEventListener('keyup',e=>{keys[e.code]=0;if(e.code==='Space')firing=false});
+
+/* ---------- screens ---------- */
+const v=$('vid');
+const toGame=()=>{v.pause();startGame()};
+let splashTimer=setTimeout(()=>show('intro'),2600);
+$('continue').onclick=()=>{clearTimeout(splashTimer);show('intro')};
+$('play').onclick=()=>{show('promo');v.currentTime=0;const p=v.play();if(p&&p.catch)p.catch(toGame)};
+$('direct').onclick=startGame;
+$('skip').onclick=toGame;v.onended=toGame;v.onerror=toGame;
+$('again').onclick=startGame;
+$('menu').onclick=()=>{run=false;show('intro')};
+})();
+</script>
+</body>
+</html>

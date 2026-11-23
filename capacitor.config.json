@@ -1,0 +1,9 @@
+{
+  "appId": "com.gta6.blackforest3d",
+  "appName": "GTA 6",
+  "webDir": "www",
+  "backgroundColor": "#14061f",
+  "android": {
+    "allowMixedContent": false
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "macroExportVersion": 1,
+  "macro": {
+    "m_name": "تشغيل GTA 6",
+    "m_description": "يفتح لعبة GTA 6 من لوحة الإعدادات السريعة في الهاتف بعد تثبيت التطبيق.",
+    "m_enabled": true,
+    "m_completed": true,
+    "m_GUID": 0,
+    "aiGenerated": 1,
+    "m_triggerList": [
+      {
+        "m_classType": "QuickSettingsTileTrigger",
+        "m_SIGUID": 0,
+        "m_tileOption": 0,
+        "quickTileLabel": "GTA 6",
+        "quickTileSubtitle": "تشغيل اللعبة",
+        "quickTileIsToggle": false,
+        "quickTileIsCollapseOnPress": true
+      }
+    ],
+    "m_actionList": [
+      {
+        "m_classType": "LaunchActivityAction",
+        "m_SIGUID": 0,
+        "option": 1,
+        "m_packageToLaunch": "com.gta6.blackforest3d",
+        "m_applicationName": "GTA 6"
+      }
+    ],
+    "m_constraintList": []
+  },
+  "globalVariables": [],
+  "userIcons": null,
+  "aiFeedback": "اختصار لوحة الإعدادات السريعة يشغّل تطبيق GTA 6 بعد تثبيته بمعرّف الحزمة com.gta6.blackforest3d."
+}
